@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Từ Vựng Tiếng Anh Lớp 6</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        select {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #4a90e2;
+            width: 100%;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+        .round-info {
+            display: inline-block;
+            background-color: #e8f4fd;
+            color: #4a90e2;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4a90e2;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .meaning-box {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0 5px;
+            min-height: 50px;
+        }
+        .type-tag {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .audio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .audio-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .audio-btn:hover {
+            background-color: #e0e0e0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        input[type="text"]:focus {
+            border-color: #4a90e2;
+        }
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #4a90e2;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-height: 25px;
+        }
+        .correct { color: #2ecc71; }
+        .incorrect { color: #e74c3c; }
+        .stats {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Học Từ Vựng Tiếng Anh Lớp 6</h1>
+
+    <select id="unitSelect" onchange="startGame()">
+        <option value="3">Unit 3: My Friends</option>
+        <option value="4" selected>Unit 4: My Neighborhood</option>
+        <option value="5">Unit 5: Natural Wonders of the World</option>
+        <option value="6">Unit 6: Our Tet Holiday</option>
+        <option value="7">Unit 7: Television</option>
+        <option value="8">Unit 8: Sports and Games</option>
+        <option value="9">Unit 9: Cities of the World</option>
+        <option value="10">Unit 10: Our Houses in the Future</option>
+        <option value="11">Unit 11: Our Greener World</option>
+        <option value="12">Unit 12: Robots</option>
+        <option value="all">-- Ôn Tập Tất Cả Các Unit --</option>
+    </select>
+
+    <div class="round-info" id="roundTitle">Vòng 1: Học Từ Mới</div>
+    
+    <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+    </div>
+
+    <div class="meaning-box" id="meaningBox"></div>
+    <div class="type-tag" id="typeTag"></div>
+
+    <div class="audio-group">
+        <button type="button" class="audio-btn" onclick="speakVN()">🔊 Tiếng Việt</button>
+        <button type="button" class="audio-btn" onclick="speakEN()">🔊 Tiếng Anh</button>
+    </div>
+
+    <!-- Cố định khu vực nhập liệu luôn luôn hiển thị -->
+    <div id="quizBox" style="display: block;">
+        <input type="text" id="userInput" placeholder="Nhập từ tiếng Anh..." autocomplete="off" onkeypress="handlePress(event)">
+        <button type="button" class="action-btn" onclick="checkAnswer()">Kiểm tra</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="stats">
+        Số từ còn lại trong vòng: <span id="remainingCount">0</span>
+    </div>
+</div>
+
+<script>
+    const data = [
+        // Unit 3
+        {u: 3, w: "active", t: "adj", m: "tích cực, hăng hái"},
+        {u: 3, w: "appearance", t: "n", m: "ngoại hình"},
+        {u: 3, w: "barbecue", t: "n", m: "Món thịt nướng barbecue"},
+        {u: 3, w: "boring", t: "adj", m: "Buồn tẻ"},
+        {u: 3, w: "choir", t: "n", m: "Dàn đồng ca"},
+        {u: 3, w: "clap", t: "v", m: "vỗ tay"},
+        {u: 3, w: "competition", t: "n", m: "Cuộc đua, cuộc thi"},
+        {u: 3, w: "confident", t: "adj", m: "Tự tin, tin tưởng"},
+        {u: 3, w: "curious", t: "adj", m: "tò mò, thích tìm hiểu"},
+        {u: 3, w: "do the gardening", t: "phr", m: "Làm vườn"},
+        {u: 3, w: "firefighter", t: "n", m: "lính chữa cháy, lính cứu hỏa"},
+        {u: 3, w: "fireworks", t: "n", m: "pháo hoa, pháo bông"},
+        {u: 3, w: "funny", t: "adj", m: "buồn cười, thú vị"},
+        {u: 3, w: "generous", t: "adj", m: "rộng rãi, hào phóng"},
+        {u: 3, w: "museum", t: "n", m: "Viện bảo tàng"},
+        {u: 3, w: "organize", t: "v", m: "tổ chức"},
+        {u: 3, w: "patient", t: "adj", m: "Điềm tĩnh, kiên nhẫn"},
+        {u: 3, w: "personality", t: "n", m: "tính cách, cá tính"},
+        {u: 3, w: "prepare", t: "v", m: "chuẩn bị"},
+        {u: 3, w: "racing", t: "n", m: "cuộc đua"},
+        {u: 3, w: "reliable", t: "adj", m: "đáng tin cậy"},
+        {u: 3, w: "serious", t: "adj", m: "nghiêm túc"},
+        {u: 3, w: "shy", t: "adj", m: "bẽn lẽn, hay xấu hổ"},
+        {u: 3, w: "sporty", t: "adj", m: "Dáng thể thao, khỏe mạnh"},
+        {u: 3, w: "volunteer", t: "n", m: "người tình nguyện"},
+        {u: 3, w: "zodiac", t: "n", m: "Cung hoàng đạo"},
+
+        // Unit 4
+        {u: 4, w: "art gallery", t: "n", m: "Phòng trưng bày các tác phẩm nghệ thuật"},
+        {u: 4, w: "backyard", t: "n", m: "sân sau"},
+        {u: 4, w: "cathedral", t: "n", m: "nhà thờ lớn, thánh đường"},
+        {u: 4, w: "convenient", t: "adj", m: "tiện lợi, thuận tiện"},
+        {u: 4, w: "convenience", t: "n", m: "sự tiện lợi, sự thuận tiện"},
+        {u: 4, w: "conveniently", t: "adv", m: "một cách tiện lợi"},
+        {u: 4, w: "inconvenient", t: "adj", m: "bất tiện, phiền phức"},
+        {u: 4, w: "crowded", t: "adj", m: "đông đúc, đông người"},
+        {u: 4, w: "exciting", t: "adj", m: "Thú vị, lí thú, hứng thú"},
+        {u: 4, w: "fantastic", t: "adj", m: "kỳ diệu, tuyệt vời"},
+        {u: 4, w: "historic", t: "adj", m: "Cổ, cổ kính, có tính chất lịch sử"},
+        {u: 4, w: "incredibly", t: "adv", m: "Đáng kinh ngạc"},
+        {u: 4, w: "memorial", t: "n", m: "đài tưởng niệm"},
+        {u: 4, w: "modern", t: "adj", m: "hiện đại"},
+        {u: 4, w: "pagoda", t: "n", m: "Ngôi chùa"},
+        {u: 4, w: "peaceful", t: "adj", m: "yên tĩnh, bình lặng"},
+        {u: 4, w: "polluted", t: "adj", m: "ô nhiễm"},
+        {u: 4, w: "quiet", t: "adj", m: "yên lặng, yên tĩnh, êm ả"},
+        {u: 4, w: "railway station", t: "n", m: "Ga tàu hỏa"},
+        {u: 4, w: "square", t: "n", m: "Quảng trường"},
+        {u: 4, w: "statue", t: "n", m: "bức tượng"},
+        {u: 4, w: "suburb", t: "n", m: "vùng ngoại ô"},
+        {u: 4, w: "temple", t: "n", m: "đền, điện, miếu"},
+        {u: 4, w: "terrible", t: "adj", m: "Tồi tệ"},
+        {u: 4, w: "workshop", t: "n", m: "Phân xưởng sản xuất, sửa chữa"},
+
+        // Unit 5
+        {u: 5, w: "antarctic", t: "n", m: "Châu Nam cực"},
+        {u: 5, w: "backpack", t: "n", m: "cái balô"},
+        {u: 5, w: "boat", t: "n", m: "Con thuyền"},
+        {u: 5, w: "boot", t: "n", m: "ủng, bốt"},
+        {u: 5, w: "cuisine", t: "n", m: "Kĩ thuật nấu ăn"},
+        {u: 5, w: "desert", t: "n", m: "Sa mạc"},
+        {u: 5, w: "diverse", t: "adj", m: "đa dạng"},
+        {u: 5, w: "essential", t: "adj", m: "Rất cần thiết, thiết yếu"},
+        {u: 5, w: "forest", t: "n", m: "rừng"},
+        {u: 5, w: "island", t: "n", m: "Hòn đảo"},
+        {u: 5, w: "lake", t: "n", m: "Hồ"},
+        {u: 5, w: "mountain", t: "n", m: "Núi"},
+        {u: 5, w: "plaster", t: "n", m: "băng dính, băng keo"},
+        {u: 5, w: "rock", t: "n", m: "Hòn đá, phiến đá"},
+        {u: 5, w: "thrilling", t: "adj", m: "Gây hồi hộp"},
+        {u: 5, w: "torch", t: "n", m: "đèn pin"},
+        {u: 5, w: "travel agent", t: "n", m: "Công ty du lịch"},
+        {u: 5, w: "valley", t: "n", m: "thung lũng"},
+        {u: 5, w: "waterfall", t: "n", m: "thác nước"},
+        {u: 5, w: "windsurfing", t: "n", m: "Môn thể thao lướt ván buồm"},
+        {u: 5, w: "wonder", t: "n", m: "kỳ quan"},
+
+        // Unit 6
+        {u: 6, w: "apricot blossom", t: "n", m: "Hoa mai"},
+        {u: 6, w: "calendar", t: "n", m: "lịch"},
+        {u: 6, w: "celebrate", t: "v", m: "kỷ niệm"},
+        {u: 6, w: "cool down", t: "v", m: "Làm mát"},
+        {u: 6, w: "decorate", t: "v", m: "trang hoàng"},
+        {u: 6, w: "empty out", t: "v", m: "Đổ rác"},
+        {u: 6, w: "family gathering", t: "n", m: "Sum họp gia đình"},
+        {u: 6, w: "feather", t: "n", m: "Lông gia cầm"},
+        {u: 6, w: "first-footer", t: "n", m: "người xông đất"},
+        {u: 6, w: "get wet", t: "v", m: "Bị ướt"},
+        {u: 6, w: "luck-money", t: "n", m: "đồng tiền lì xì, cầu may"},
+        {u: 6, w: "peach blossom", t: "n", m: "hoa đào"},
+        {u: 6, w: "remove", t: "v", m: "Rũ bỏ, dời đi, di chuyển"},
+        {u: 6, w: "rooster", t: "n", m: "gà trống"},
+        {u: 6, w: "rubbish", t: "n", m: "đồ bỏ đi, rác"},
+        {u: 6, w: "wish", t: "n/v", m: "Lời ước, ước"},
+
+        // Unit 7
+        {u: 7, w: "adventure", t: "n", m: "Cuộc phiêu lưu"},
+        {u: 7, w: "announce", t: "v", m: "thông báo"},
+        {u: 7, w: "audience", t: "n", m: "khán giả"},
+        {u: 7, w: "cartoon", t: "n", m: "Phim hoạt hình"},
+        {u: 7, w: "channel", t: "n", m: "Kênh truyền hình"},
+        {u: 7, w: "character", t: "n", m: "Nhân vật"},
+        {u: 7, w: "clumsy", t: "adj", m: "vụng về"},
+        {u: 7, w: "comedy", t: "n", m: "phim hài"},
+        {u: 7, w: "documentary", t: "n", m: "phim tư liệu"},
+        {u: 7, w: "educate", t: "v", m: "giáo dục"},
+        {u: 7, w: "educational", t: "adj", m: "Mang tính giáo dục"},
+        {u: 7, w: "entertain", t: "v", m: "giải trí"},
+        {u: 7, w: "event", t: "n", m: "sự kiện"},
+        {u: 7, w: "fact", t: "n", m: "thực tế, sự thật hiển nhiên"},
+        {u: 7, w: "fair", t: "n", m: "Hội chợ, chợ phiên"},
+        {u: 7, w: "game show", t: "n", m: "Buổi truyền hình giải trí"},
+        {u: 7, w: "human", t: "adj", m: "Thuộc về con người"},
+        {u: 7, w: "local", t: "adj", m: "thuộc địa phương"},
+        {u: 7, w: "main", t: "adj", m: "Chính yếu, chủ đạo"},
+        {u: 7, w: "manner", t: "n", m: "Tác phong, tính cách"},
+        {u: 7, w: "national", t: "adj", m: "thuộc quốc gia"},
+        {u: 7, w: "newsreader", t: "n", m: "Người đọc bản tin trên đài truyền hình"},
+        {u: 7, w: "pig racing", t: "n", m: "Đua lợn"},
+        {u: 7, w: "program", t: "n", m: "chương trình"},
+
+        // Unit 8
+        {u: 8, w: "athlete", t: "n", m: "vận động viên"},
+        {u: 8, w: "basketball", t: "n", m: "Môn bóng rổ"},
+        {u: 8, w: "career", t: "n", m: "nghề nghiệp, sự nghiệp"},
+        {u: 8, w: "congratulation", t: "n", m: "xin chúc mừng, sự chúc mừng"},
+        {u: 8, w: "equipment", t: "n", m: "Thiết bị, dụng cụ"},
+        {u: 8, w: "exhausted", t: "adj", m: "kiệt sức, mệt lử"},
+        {u: 8, w: "fit", t: "adj", m: "mạnh khỏe"},
+        {u: 8, w: "goggles", t: "n", m: "Kính bơi, kính bảo vệ mắt"},
+        {u: 8, w: "gym", t: "n", m: "Trung tâm thể dục"},
+        {u: 8, w: "marathon", t: "n", m: "cuộc đua ma ra tông"},
+        {u: 8, w: "racket", t: "n", m: "Cái vợt cầu lông"},
+        {u: 8, w: "regard", t: "v", m: "Coi là"},
+        {u: 8, w: "ring", t: "n", m: "Sân đấu boxing"},
+        {u: 8, w: "skateboard", t: "n", m: "ván trượt, trượt ván"},
+        {u: 8, w: "skiing", t: "n", m: "môn trượt tuyết"},
+        {u: 8, w: "sports", t: "n", m: "Cuộc đua thể thao"},
+        {u: 8, w: "volleyball", t: "n", m: "Môn bóng chuyền"},
+
+        // Unit 9
+        {u: 9, w: "asia", t: "n", m: "châu Á"},
+        {u: 9, w: "africa", t: "n", m: "châu Phi"},
+        {u: 9, w: "europe", t: "n", m: "châu Âu"},
+        {u: 9, w: "continent", t: "n", m: "châu lục"},
+        {u: 9, w: "creature", t: "n", m: "sinh vật, tạo vật"},
+        {u: 9, w: "landmark", t: "n", m: "danh thắng trong thành phố"},
+        {u: 9, w: "palace", t: "n", m: "cung điện"},
+        {u: 9, w: "popular", t: "adj", m: "nổi tiếng, phổ biến"},
+        {u: 9, w: "postcard", t: "n", m: "bưu thiếp"},
+        {u: 9, w: "symbol", t: "n", m: "biểu tượng"},
+        {u: 9, w: "tower", t: "n", m: "tháp"},
+        {u: 9, w: "well-known", t: "adj", m: "nổi tiếng"},
+
+        // Unit 10
+        {u: 10, w: "apartment", t: "n", m: "căn hộ"},
+        {u: 10, w: "condominium", t: "n", m: "chung cư"},
+        {u: 10, w: "houseboat", t: "n", m: "nhà thuyền"},
+        {u: 10, w: "villa", t: "n", m: "biệt thự"},
+        {u: 10, w: "appliance", t: "n", m: "thiết bị, dụng cụ"},
+        {u: 10, w: "wireless", t: "adj", m: "vô tuyến điện, không dây"},
+        {u: 10, w: "fridge", t: "n", m: "tủ lạnh"},
+        {u: 10, w: "automatic", t: "adj", m: "tự động"},
+        {u: 10, w: "helicopter", t: "n", m: "máy bay trực tiếp"},
+        {u: 10, w: "skyscraper", t: "n", m: "nhà chọc trời, nhà cao tầng"},
+
+        // Unit 11 & 12
+        {u: 11, w: "air pollution", t: "n", m: "ô nhiễm không khí"},
+        {u: 11, w: "deforestation", t: "n", m: "nạn phá rừng"},
+        {u: 11, w: "environment", t: "n", m: "môi trường"},
+        {u: 11, w: "recycle", t: "v", m: "tái chế"},
+        {u: 11, w: "reuse", t: "v", m: "tái sử dụng"},
+        {u: 12, w: "robot", t: "n", m: "người máy"},
+        {u: 12, w: "space station", t: "n", m: "trạm vũ trụ"},
+        {u: 12, w: "planet", t: "n", m: "hành tinh"}
+    ];
+
+    let currentList = [];
+    let wrongList = [];
+    let currentIndex = 0;
+    let round = 1;
+    let lockSubmit = false;
+
+    function shuffle(arr) {
+        let array = [...arr];
+        for (let i = array.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function startGame() {
+        let val = document.getElementById('unitSelect').value;
+        if (val === 'all') {
+            currentList = shuffle(data);
+        } else {
+            let filtered = data.filter(item => item.u == val);
+            currentList = shuffle(filtered);
+        }
+        wrongList = [];
+        currentIndex = 0;
+        round = 1;
+        lockSubmit = false;
+        document.getElementById('quizBox').style.display = "block";
+        document.getElementById('roundTitle').innerText = "Vòng 1: Học Từ Mới";
+        showNextWord();
+    }
+
+    function showNextWord() {
+        lockSubmit = false;
+        
+        if (currentIndex >= currentList.length) {
+            if (wrongList.length > 0) {
+                round++;
+                currentList = shuffle(wrongList);
+                wrongList = [];
+                currentIndex = 0;
+                document.getElementById('roundTitle').innerText = `Vòng ${round}: Ôn Lại Từ Chưa Thuộc`;
+                alert(`Kết thúc vòng! Còn ${currentList.length} từ chưa thuộc. Bắt đầu ôn lại!`);
+            } else {
+                document.getElementById('meaningBox').innerText = "🎉 XUẤT SẮC!";
+                document.getElementById('typeTag').innerText = "";
+                document.getElementById('feedback').className = "feedback correct";
+                document.getElementById('feedback').innerText = "Bạn đã thuộc hết tất cả các từ trong phần này!";
+                document.getElementById('quizBox').style.display = "none";
+                document.getElementById('progressBar').style.width = "100%";
+                document.getElementById('remainingCount').innerText = "0";
+                return;
+            }
+        }
+
+        let current = currentList[currentIndex];
+        document.getElementById('meaningBox').innerText = current.m;
+        document.getElementById('typeTag').innerText = current.t ? `(${current.t})` : "";
+        document.getElementById('userInput').value = "";
+        document.getElementById('feedback').innerText = "";
+        
+        let percent = (currentIndex / currentList.length) * 100;
+        document.getElementById('progressBar').style.width = `${percent}%`;
+        document.getElementById('remainingCount').innerText = currentList.length - currentIndex;
+
+        setTimeout(() => {
+            document.getElementById('userInput').focus();
+        }, 80);
+    }
+
+    function speakVN() {
+        if (currentIndex < currentList.length) {
+            let text = currentList[currentIndex].m;
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'vi-VN';
+            utterance.rate = 0.9;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function speakEN() {
+        if (currentIndex < currentList.length) {
+            let text = currentList[currentIndex].w;
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function handlePress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            checkAnswer();
+        }
+    }
+
+    function checkAnswer() {
+        if (lockSubmit) return;
+        
+        let inputVal = document.getElementById('userInput').value.trim();
+        if (!inputVal) return;
+
+        lockSubmit = true;
+        let current = currentList[currentIndex];
+        let feedbackEl = document.getElementById('feedback');
+
+        let cleanInput = inputVal.toLowerCase().replace(/\s+/g, ' ');
+        let cleanTarget = current.w.toLowerCase().replace(/\s+/g, ' ');
+
+        if (cleanInput === cleanTarget) {
+            feedbackEl.className = "feedback correct";
+            feedbackEl.innerText = "✓ Chính xác!";
+            setTimeout(() => {
+                currentIndex++;
+                showNextWord();
+            }, 700);
+        } else {
+            feedbackEl.className = "feedback incorrect";
+            feedbackEl.innerText = `✗ Sai rồi! Đáp án đúng: "${current.w}"`;
+            
+            if (!wrongList.some(item => item.w === current.w)) {
+                wrongList.push(current);
+            }
+            setTimeout(() => {
+                currentIndex++;
+                showNextWord();
+            }, 1800);
+        }
+    }
+
+    // Tự động khởi chạy mượt mà ngay khi trang được tải
+    window.onload = startGame;
+</script>
+
+</body>
+</html>
